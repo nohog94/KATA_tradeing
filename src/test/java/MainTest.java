@@ -254,4 +254,332 @@ public class MainTest {
             broker.getPrice(stockCode);
         });
     }
+
+    @Test
+    void Nemo_가격이_올라가는_추세일때_buyNiceTiming으로_최대수량_매수한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "005930";
+        int amount = 1000000;
+
+        // act
+        boolean result = broker.buyNiceTiming(stockCode, amount);
+
+        // assert
+        assertTrue(result);
+    }
+
+    @Test
+    void Nemo_가격이_내려가는_추세일때_buyNiceTiming으로_매수하지_않는다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "005930";
+        int amount = 1000000;
+
+        // act
+        boolean result = broker.buyNiceTiming(stockCode, amount);
+
+        // assert
+        assertFalse(result);
+    }
+
+    @Test
+    void Nemo_buyNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "999999";
+        int amount = 1000000;
+
+        // act & assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            broker.buyNiceTiming(stockCode, amount);
+        });
+    }
+
+    @Test
+    void Kiwer_가격이_올라가는_추세일때_buyNiceTiming으로_최대수량_매수한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "005930";
+        int amount = 1000000;
+
+        // act
+        boolean result = broker.buyNiceTiming(stockCode, amount);
+
+        // assert
+        assertTrue(result);
+    }
+
+    @Test
+    void Kiwer_가격이_내려가는_추세일때_buyNiceTiming으로_매수하지_않는다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "005930";
+        int amount = 1000000;
+
+        // act
+        boolean result = broker.buyNiceTiming(stockCode, amount);
+
+        // assert
+        assertFalse(result);
+    }
+
+    @Test
+    void Kiwer_buyNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "999999";
+        int amount = 1000000;
+
+        // act & assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            broker.buyNiceTiming(stockCode, amount);
+        });
+    }
+
+    @Test
+    void Nemo_가격이_내려가는_추세일때_sellNiceTiming으로_설정수량_매도한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "005930";
+        int quantity = 10;
+
+        // act
+        boolean result = broker.sellNiceTiming(stockCode, quantity);
+
+        // assert
+        assertTrue(result);
+    }
+
+    @Test
+    void Nemo_가격이_올라가는_추세일때_sellNiceTiming으로_매도하지_않는다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "005930";
+        int quantity = 10;
+
+        // act
+        boolean result = broker.sellNiceTiming(stockCode, quantity);
+
+        // assert
+        assertFalse(result);
+    }
+
+    @Test
+    void Nemo_sellNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "999999";
+        int quantity = 10;
+
+        // act & assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            broker.sellNiceTiming(stockCode, quantity);
+        });
+    }
+
+    @Test
+    void Kiwer_가격이_내려가는_추세일때_sellNiceTiming으로_설정수량_매도한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "005930";
+        int quantity = 10;
+
+        // act
+        boolean result = broker.sellNiceTiming(stockCode, quantity);
+
+        // assert
+        assertTrue(result);
+    }
+
+    @Test
+    void Kiwer_가격이_올라가는_추세일때_sellNiceTiming으로_매도하지_않는다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "005930";
+        int quantity = 10;
+
+        // act
+        boolean result = broker.sellNiceTiming(stockCode, quantity);
+
+        // assert
+        assertFalse(result);
+    }
+
+    @Test
+    void Kiwer_sellNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "999999";
+        int quantity = 10;
+
+        // act & assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            broker.sellNiceTiming(stockCode, quantity);
+        });
+    }
+
+    @Test
+    void Nemo_가격이_올라가는_추세일때_buyNiceTiming으로_최대수량_매수한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "005930";
+        int amount = 1000000;
+
+        // act
+        boolean result = broker.buyNiceTiming(stockCode, amount);
+
+        // assert
+        assertTrue(result);
+    }
+
+    @Test
+    void Nemo_가격이_내려가는_추세일때_buyNiceTiming으로_매수하지_않는다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "005930";
+        int amount = 1000000;
+
+        // act
+        boolean result = broker.buyNiceTiming(stockCode, amount);
+
+        // assert
+        assertFalse(result);
+    }
+
+    @Test
+    void Nemo_buyNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "999999";
+        int amount = 1000000;
+
+        // act & assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            broker.buyNiceTiming(stockCode, amount);
+        });
+    }
+
+    @Test
+    void Kiwer_가격이_올라가는_추세일때_buyNiceTiming으로_최대수량_매수한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "005930";
+        int amount = 1000000;
+
+        // act
+        boolean result = broker.buyNiceTiming(stockCode, amount);
+
+        // assert
+        assertTrue(result);
+    }
+
+    @Test
+    void Kiwer_가격이_내려가는_추세일때_buyNiceTiming으로_매수하지_않는다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "005930";
+        int amount = 1000000;
+
+        // act
+        boolean result = broker.buyNiceTiming(stockCode, amount);
+
+        // assert
+        assertFalse(result);
+    }
+
+    @Test
+    void Kiwer_buyNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "999999";
+        int amount = 1000000;
+
+        // act & assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            broker.buyNiceTiming(stockCode, amount);
+        });
+    }
+
+    @Test
+    void Nemo_가격이_내려가는_추세일때_sellNiceTiming으로_설정수량_매도한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "005930";
+        int quantity = 10;
+
+        // act
+        boolean result = broker.sellNiceTiming(stockCode, quantity);
+
+        // assert
+        assertTrue(result);
+    }
+
+    @Test
+    void Nemo_가격이_올라가는_추세일때_sellNiceTiming으로_매도하지_않는다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "005930";
+        int quantity = 10;
+
+        // act
+        boolean result = broker.sellNiceTiming(stockCode, quantity);
+
+        // assert
+        assertFalse(result);
+    }
+
+    @Test
+    void Nemo_sellNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Nemo");
+        String stockCode = "999999";
+        int quantity = 10;
+
+        // act & assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            broker.sellNiceTiming(stockCode, quantity);
+        });
+    }
+
+    @Test
+    void Kiwer_가격이_내려가는_추세일때_sellNiceTiming으로_설정수량_매도한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "005930";
+        int quantity = 10;
+
+        // act
+        boolean result = broker.sellNiceTiming(stockCode, quantity);
+
+        // assert
+        assertTrue(result);
+    }
+
+    @Test
+    void Kiwer_가격이_올라가는_추세일때_sellNiceTiming으로_매도하지_않는다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "005930";
+        int quantity = 10;
+
+        // act
+        boolean result = broker.sellNiceTiming(stockCode, quantity);
+
+        // assert
+        assertFalse(result);
+    }
+
+    @Test
+    void Kiwer_sellNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+        // arrange
+        StockBroker broker = selector.selectStockBroker("Kiwer");
+        String stockCode = "999999";
+        int quantity = 10;
+
+        // act & assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            broker.sellNiceTiming(stockCode, quantity);
+        });
+    }
 }
