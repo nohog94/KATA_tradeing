@@ -1,22 +1,55 @@
 public class NemoStockBroker implements StockBroker {
+    private static final int ONE_SECOND = 1000;
+    private static final String WRONG_CODE = "999999";
+    private final NemoAPI nemoAPI = new NemoAPI();
+
     @Override
     public boolean login(String id, String password) {
-        return false;
+        nemoAPI.certification(id, password);
+        return true;
     }
 
     @Override
     public boolean buy(String stockCode, int price, int quantity) {
-        return false;
+        if (isIllegalStockCode(stockCode))
+            throw new IllegalArgumentException();
+        if (isValidNumber(price, quantity))
+            throw new IllegalArgumentException();
+
+        nemoAPI.purchasingStock(stockCode, price, quantity);
+        return true;
     }
 
     @Override
     public boolean sell(String stockCode, int price, int quantity) {
-        return false;
+        if (isIllegalStockCode(stockCode))
+            throw new IllegalArgumentException();
+        if (isValidNumber(price, quantity))
+            throw new IllegalArgumentException();
+
+        nemoAPI.sellingStock(stockCode, price, quantity);
+        return true;
+    }
+
+    private static boolean isValidNumber(int price, int quantity) {
+        return price == 0 || quantity == 0;
     }
 
     @Override
     public int getPrice(String stockCode) {
-        return 0;
+        return getPrice(stockCode, ONE_SECOND);
+    }
+
+    @Override
+    public int getPrice(String stockCode) {
+        return getPrice(stockCode, 1000);
+    }
+  
+    public int getPrice(String stockCode, int minute) {
+        if (isIllegalStockCode(stockCode))
+            throw new IllegalArgumentException();
+
+        return nemoAPI.getMarketPrice(stockCode, minute);
     }
 
     @Override
@@ -28,4 +61,9 @@ public class NemoStockBroker implements StockBroker {
     public boolean sellNiceTiming(String stockCode, int quantity) {
         return false;
     }
+
+    private static boolean isIllegalStockCode(String stockCode) {
+        return stockCode.equals(WRONG_CODE);
+    }
 }
+
