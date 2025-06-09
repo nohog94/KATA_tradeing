@@ -1,6 +1,3 @@
-package test.java;
-
-import main.java.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
@@ -95,7 +92,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_없는 종목_매수_시_에러_return을_테스트한다() {
+    void Nemo_없는_종목_매수_시_에러_return을_테스트한다() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "999999";
@@ -124,7 +121,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_없는 종목_매도_시_에러_return을_테스트한다() {
+    void Nemo_없는_종목_매도_시_에러_return을_테스트한다() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "999999";
@@ -151,7 +148,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_없는 종목_확인_시_에러_return을_테스트한다() {
+    void Nemo_없는_종목_확인_시_에러_return을_테스트한다() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "999999";
@@ -163,7 +160,7 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_증권사의_로그인_기능을_테스트한다() {
+    void Kiwer_증권사의_로그인_기능을_테스트한다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Kiwer");
         String id = "testId";
@@ -192,10 +189,12 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_없는 종목_매수_시_에러_return을_테스트한다() {
+    void Kiwer_없는_종목_매수_시_에러_return을_테스트한다() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Kiwer");
         String stockCode = "999999";
+        int price = 70000;
+        int quantity = 5;
 
         // act & assert
         assertThrows(IllegalArgumentException.class, () -> {
@@ -223,6 +222,8 @@ public class MainTest {
         // arrange
         StockBroker broker = selector.selectStockBroker("Kiwer");
         String stockCode = "999999";
+        int price = 70000;
+        int quantity = 5;
 
         // act & assert
         assertThrows(IllegalArgumentException.class, () -> {
@@ -244,7 +245,7 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_없는 종목_확인_시_에러_return을_테스트한다() {
+    void Kiwer_없는_종목_확인_시_에러_return을_테스트한다() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Kiwer");
         String stockCode = "999999";
