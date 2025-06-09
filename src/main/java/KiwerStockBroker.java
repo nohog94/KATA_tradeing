@@ -36,6 +36,34 @@ public class KiwerStockBroker implements StockBroker {
         return kiwerAPI.currentPrice(stockCode);
     }
 
+    public boolean buyNiceTiming(String stockCode, int amount) {
+        vaildateStockCode(stockCode);
+
+        int firstPrice = kiwerAPI.currentPrice(stockCode);
+        int secondPrice = kiwerAPI.currentPrice(stockCode);
+
+        if (firstPrice < secondPrice) {
+            kiwerAPI.sell(stockCode, secondPrice, 100000);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean sellNiceTiming(String stockCode, int quantity) {
+        vaildateStockCode(stockCode);
+
+        int firstPrice = kiwerAPI.currentPrice(stockCode);
+        int secondPrice = kiwerAPI.currentPrice(stockCode);
+
+        if (firstPrice > secondPrice) {
+            kiwerAPI.sell(stockCode, secondPrice, quantity);
+            return true;
+        }
+
+        return false;
+    }
+
     private void vaildateStockCode(String stockCode) {
         if (stockCode.equals("999999")) throw new IllegalArgumentException("주식 코드가 잘못되었습니다.");
     }
