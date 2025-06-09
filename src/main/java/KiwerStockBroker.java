@@ -1,5 +1,7 @@
 public class KiwerStockBroker implements StockBroker {
+    public static final int MAX_QUNTITY = 10000;
     private KiwerAPI kiwerAPI;
+    private int currentPrice;
 
     public KiwerStockBroker() {
         this.kiwerAPI = new KiwerAPI();
@@ -32,17 +34,35 @@ public class KiwerStockBroker implements StockBroker {
     @Override
     public int getPrice(String stockCode) {
         vaildateStockCode(stockCode);
-
-        return kiwerAPI.currentPrice(stockCode);
+        this.currentPrice = kiwerAPI.currentPrice(stockCode);
+        return this.currentPrice;
     }
 
     @Override
     public boolean buyNiceTiming(String stockCode, int amount) {
+        vaildateStockCode(stockCode);
+
+        int kiwerCurrentPrice = kiwerAPI.currentPrice(stockCode);
+
+        if (this.currentPrice < kiwerCurrentPrice) {
+            kiwerAPI.sell(stockCode, kiwerCurrentPrice, MAX_QUNTITY);
+            return true;
+        }
+
         return false;
     }
 
     @Override
     public boolean sellNiceTiming(String stockCode, int quantity) {
+        vaildateStockCode(stockCode);
+
+        int kiwerCurrentPrice = kiwerAPI.currentPrice(stockCode);
+
+        if (this.currentPrice > kiwerCurrentPrice) {
+            kiwerAPI.sell(stockCode, kiwerCurrentPrice, quantity);
+            return true;
+        }
+
         return false;
     }
 

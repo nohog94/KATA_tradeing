@@ -385,6 +385,8 @@ public class MainTest {
         StockBroker broker = selector.selectStockBroker("Kiwer");
         String stockCode = "005930";
         int quantity = 10;
+        // 기준 가격 설정
+        broker.getPrice(stockCode);
 
         // act
         boolean result = broker.sellNiceTiming(stockCode, quantity);
