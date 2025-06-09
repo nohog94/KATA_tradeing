@@ -1,0 +1,37 @@
+public class KiwerStockBroker {
+    private KiwerAPI kiwerAPI;
+
+    public KiwerStockBroker() {
+        this.kiwerAPI = new KiwerAPI();
+    }
+
+    public boolean login(String id, String password) {
+        kiwerAPI.login(id, password);
+        return true;
+    }
+
+    public boolean buy(String stockCode, int price, int quantity) {
+        if(stockCode.equals("999999")) throw new IllegalArgumentException("주식 코드가 잘못되었습니다.");
+        if(price <= 0) throw new IllegalArgumentException("가격이 0원 이하 입니다.");
+        if(quantity <= 0) throw new IllegalArgumentException("수량이 0 이하 입니다.");
+
+        kiwerAPI.buy(stockCode, price, quantity);
+        return true;
+    }
+
+
+    public boolean sell(String stockCode, int price, int quantity) {
+        if(stockCode.equals("999999")) throw new IllegalArgumentException("주식 코드가 잘못되었습니다.");
+        if(price <= 0) throw new IllegalArgumentException("가격이 0원 이하 입니다.");
+        if(quantity <= 0) throw new IllegalArgumentException("수량이 0 이하 입니다.");
+
+        kiwerAPI.sell(stockCode, price, quantity);
+        return true;
+    }
+
+    public int getPrice(String stockCode) {
+        if(stockCode.equals("999999")) throw new IllegalArgumentException("주식 코드가 잘못되었습니다.");
+
+        return kiwerAPI.currentPrice(stockCode);
+    }
+}

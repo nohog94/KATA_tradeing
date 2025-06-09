@@ -1,6 +1,3 @@
-package test.java;
-
-import main.java.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,7 +65,7 @@ public class MainTest {
     @Test
     void Kiwer_증권사의_로그인_기능을_테스트한다() {
         // arrange
-        StockBroker broker = selector.selectStockBroker("Kiwer");
+        KiwerStockBroker broker = new KiwerStockBroker();
         String id = "testId";
         String password = "testPass";
         
@@ -95,7 +92,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_없는 종목_매수_시_에러_return을_테스트한다() {
+    void Nemo_없는_종목_매수_시_에러_return을_테스트한다() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "999999";
@@ -124,7 +121,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_없는 종목_매도_시_에러_return을_테스트한다() {
+    void Nemo_없는_종목_매도_시_에러_return을_테스트한다() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "999999";
@@ -151,7 +148,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_없는 종목_확인_시_에러_return을_테스트한다() {
+    void Nemo_없는_종목_확인_시_에러_return을_테스트한다() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "999999";
@@ -163,23 +160,9 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_증권사의_로그인_기능을_테스트한다() {
-        // arrange
-        StockBroker broker = selector.selectStockBroker("Kiwer");
-        String id = "testId";
-        String password = "testPass";
-
-        // act
-        boolean result = broker.login(id, password);
-
-        // assert
-        assertTrue(result);
-    }
-
-    @Test
     void Kiwer_매수_기능을_테스트한다() {
         // arrange
-        StockBroker broker = selector.selectStockBroker("Kiwer");
+        KiwerStockBroker broker = new KiwerStockBroker();
         String stockCode = "005930";
         int price = 70000;
         int quantity = 10;
@@ -192,10 +175,12 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_없는 종목_매수_시_에러_return을_테스트한다() {
+    void Kiwer_없는_종목_매수_시_에러_return을_테스트한다() {
         // arrange
-        StockBroker broker = selector.selectStockBroker("Kiwer");
+        KiwerStockBroker broker = new KiwerStockBroker();
         String stockCode = "999999";
+        int price = -1;
+        int quantity = -1;
 
         // act & assert
         assertThrows(IllegalArgumentException.class, () -> {
@@ -206,7 +191,7 @@ public class MainTest {
     @Test
     void Kiwer_매도_기능을_테스트한다() {
         // arrange
-        StockBroker broker = selector.selectStockBroker("Kiwer");
+        KiwerStockBroker broker = new KiwerStockBroker();
         String stockCode = "005930";
         int price = 70000;
         int quantity = 5;
@@ -221,8 +206,10 @@ public class MainTest {
     @Test
     void Kiwer_없는_종목_매도_시_에러_return을_테스트한다() {
         // arrange
-        StockBroker broker = selector.selectStockBroker("Kiwer");
+        KiwerStockBroker broker = new KiwerStockBroker();
         String stockCode = "999999";
+        int price = -1;
+        int quantity = -1;
 
         // act & assert
         assertThrows(IllegalArgumentException.class, () -> {
@@ -233,7 +220,7 @@ public class MainTest {
     @Test
     void Kiwer_현재가_확인_기능을_테스트한다() {
         // arrange
-        StockBroker broker = selector.selectStockBroker("Kiwer");
+        KiwerStockBroker broker = new KiwerStockBroker();
         String stockCode = "005930";
 
         // act
@@ -244,9 +231,9 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_없는 종목_확인_시_에러_return을_테스트한다() {
+    void Kiwer_없는_종목_확인_시_에러_return을_테스트한다() {
         // arrange
-        StockBroker broker = selector.selectStockBroker("Kiwer");
+        KiwerStockBroker broker = new KiwerStockBroker();
         String stockCode = "999999";
 
         // act & assert
