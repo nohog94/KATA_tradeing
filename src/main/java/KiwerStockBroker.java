@@ -36,16 +36,6 @@ public class KiwerStockBroker implements StockBroker {
         return kiwerAPI.currentPrice(stockCode);
     }
 
-    @Override
-    public boolean buyNiceTiming(String stockCode, int amount) {
-        return false;
-    }
-
-    @Override
-    public boolean sellNiceTiming(String stockCode, int quantity) {
-        return false;
-    }
-
     private void vaildateStockCode(String stockCode) {
         if (stockCode.equals("999999")) throw new IllegalArgumentException("주식 코드가 잘못되었습니다.");
     }
