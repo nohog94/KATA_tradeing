@@ -7,10 +7,7 @@ public class AutoTrading {
     }
 
     public boolean buyNiceTiming(String stockCode, int amount) {
-        int[] prices = new int[3];
-        for (int i = 0; i < 3; i++) {
-            prices[i] = broker.getPrice(stockCode);
-        }
+        int[] prices = getContinuePrice(stockCode);
 
         if (prices[0] < prices[1] && prices[1] < prices[2]) {
             int finalPrice = prices[2];
@@ -21,11 +18,16 @@ public class AutoTrading {
         return false;
     }
 
-    public boolean sellNiceTiming(String stockCode, int quantity) {
+    private int[] getContinuePrice(String stockCode) {
         int[] prices = new int[3];
         for (int i = 0; i < 3; i++) {
             prices[i] = broker.getPrice(stockCode);
         }
+        return prices;
+    }
+
+    public boolean sellNiceTiming(String stockCode, int quantity) {
+        int[] prices = getContinuePrice(stockCode);
 
         if (prices[0] > prices[1] && prices[1] > prices[2]) {
             int finalPrice = prices[2];
