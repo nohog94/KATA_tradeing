@@ -346,7 +346,7 @@ public class MainTest {
         // act
         boolean result = autoTrading.sellNiceTiming(stockCode, quantity);
 
-        // assert
+        // assertt
         assertFalse(result);
         verify(mockStockBroker, times(3)).getPrice(stockCode); // getPrice 3번 호출 검증
         verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt()); // sell 호출되지 않음 검증
