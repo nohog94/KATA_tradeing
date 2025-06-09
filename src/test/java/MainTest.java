@@ -421,7 +421,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_가격이_올라가는_추세일때_buyNiceTiming으로_최대수량_매수한다() {
+    void Nemo_가격이_올라가는_추세일때_buyNiceTiming으로_최대수량_매수한다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "005930";
@@ -435,7 +435,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_가격이_내려가는_추세일때_buyNiceTiming으로_매수하지_않는다() {
+    void Nemo_가격이_내려가는_추세일때_buyNiceTiming으로_매수하지_않는다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "005930";
@@ -449,7 +449,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_buyNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+    void Nemo_buyNiceTiming_없는_종목_시_에러_return을_테스트한다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "999999";
@@ -462,7 +462,7 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_가격이_올라가는_추세일때_buyNiceTiming으로_최대수량_매수한다() {
+    void Kiwer_가격이_올라가는_추세일때_buyNiceTiming으로_최대수량_매수한다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Kiwer");
         String stockCode = "005930";
@@ -476,7 +476,7 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_가격이_내려가는_추세일때_buyNiceTiming으로_매수하지_않는다() {
+    void Kiwer_가격이_내려가는_추세일때_buyNiceTiming으로_매수하지_않는다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Kiwer");
         String stockCode = "005930";
@@ -490,7 +490,7 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_buyNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+    void Kiwer_buyNiceTiming_없는_종목_시_에러_return을_테스트한다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Kiwer");
         String stockCode = "999999";
@@ -503,7 +503,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_가격이_내려가는_추세일때_sellNiceTiming으로_설정수량_매도한다() {
+    void Nemo_가격이_내려가는_추세일때_sellNiceTiming으로_설정수량_매도한다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "005930";
@@ -517,7 +517,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_가격이_올라가는_추세일때_sellNiceTiming으로_매도하지_않는다() {
+    void Nemo_가격이_올라가는_추세일때_sellNiceTiming으로_매도하지_않는다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "005930";
@@ -531,7 +531,7 @@ public class MainTest {
     }
 
     @Test
-    void Nemo_sellNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+    void Nemo_sellNiceTiming_없는_종목_시_에러_return을_테스트한다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
         String stockCode = "999999";
@@ -544,7 +544,7 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_가격이_내려가는_추세일때_sellNiceTiming으로_설정수량_매도한다() {
+    void Kiwer_가격이_내려가는_추세일때_sellNiceTiming으로_설정수량_매도한다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Kiwer");
         String stockCode = "005930";
@@ -558,7 +558,7 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_가격이_올라가는_추세일때_sellNiceTiming으로_매도하지_않는다() {
+    void Kiwer_가격이_올라가는_추세일때_sellNiceTiming으로_매도하지_않는다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Kiwer");
         String stockCode = "005930";
@@ -572,7 +572,7 @@ public class MainTest {
     }
 
     @Test
-    void Kiwer_sellNiceTiming_없는_종목_시_에러_return을_테스트한다() {
+    void Kiwer_sellNiceTiming_없는_종목_시_에러_return을_테스트한다_2() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Kiwer");
         String stockCode = "999999";

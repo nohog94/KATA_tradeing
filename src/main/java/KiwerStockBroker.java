@@ -18,4 +18,14 @@ public class KiwerStockBroker implements StockBroker {
     public int getPrice(String stockCode) {
         return 0;
     }
+
+    @Override
+    public boolean buyNiceTiming(String stockCode, int amount) {
+        return false;
+    }
+
+    @Override
+    public boolean sellNiceTiming(String stockCode, int quantity) {
+        return false;
+    }
 }

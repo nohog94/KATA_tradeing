@@ -3,4 +3,6 @@ public interface StockBroker {
     boolean buy(String stockCode, int price, int quantity);
     boolean sell(String stockCode, int price, int quantity);
     int getPrice(String stockCode);
+    boolean buyNiceTiming(String stockCode, int amount);
+    boolean sellNiceTiming(String stockCode, int quantity);
 }
