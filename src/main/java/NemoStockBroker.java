@@ -40,11 +40,6 @@ public class NemoStockBroker implements StockBroker {
         return getPrice(stockCode, ONE_SECOND);
     }
 
-    @Override
-    public int getPrice(String stockCode) {
-        return getPrice(stockCode, 1000);
-    }
-
     public int getPrice(String stockCode, int minute) {
         if (isIllegalStockCode(stockCode))
             throw new IllegalArgumentException();
@@ -52,17 +47,8 @@ public class NemoStockBroker implements StockBroker {
         return nemoAPI.getMarketPrice(stockCode, minute);
     }
 
-    @Override
-    public boolean buyNiceTiming(String stockCode, int amount) {
-        return false;
-    }
-
-    @Override
-    public boolean sellNiceTiming(String stockCode, int quantity) {
-        return false;
-    }
-
     private static boolean isIllegalStockCode(String stockCode) {
         return stockCode.equals(WRONG_CODE);
     }
 }
+
