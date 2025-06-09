@@ -40,11 +40,6 @@ public class NemoStockBroker implements StockBroker {
         return getPrice(stockCode, ONE_SECOND);
     }
 
-    @Override
-    public int getPrice(String stockCode) {
-        return getPrice(stockCode, 1000);
-    }
-  
     public int getPrice(String stockCode, int minute) {
         if (isIllegalStockCode(stockCode))
             throw new IllegalArgumentException();
