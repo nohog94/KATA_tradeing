@@ -1,13 +1,21 @@
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class MainTest {
     
     private StockBrokerSelector selector;
-    
+
+    @Mock
+    private StockBroker mockStockBroker;
+
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         selector = new StockBrokerSelector();
     }
     
@@ -582,5 +590,97 @@ public class MainTest {
         assertThrows(IllegalArgumentException.class, () -> {
             broker.sellNiceTiming(stockCode, quantity);
         });
+    }
+
+    @Test
+    void buyNiceTiming_3번_다_올라가면_getPrice_3번_호출되고_buy_1번_호출된다() {
+        // arrange
+        AutoTrading autoTrading = new AutoTrading(mockStockBroker);
+        String stockCode = "005930";
+        int amount = 1000000;
+
+        // getPrice를 3번 호출할 때 상승 추세 시뮬레이션 (100 -> 110 -> 120)
+        when(mockStockBroker.getPrice(stockCode))
+                .thenReturn(100)
+                .thenReturn(110)
+                .thenReturn(120);
+
+        when(mockStockBroker.buy(stockCode, 120, 8333)).thenReturn(true); // 1000000 / 120 = 8333
+
+        // act
+        boolean result = autoTrading.buyNiceTiming(stockCode, amount);
+
+        // assert
+        assertTrue(result);
+        verify(mockStockBroker, times(3)).getPrice(stockCode); // getPrice 3번 호출 검증
+        verify(mockStockBroker, times(1)).buy(stockCode, 120, 8333); // buy 1번 호출 검증
+    }
+
+    @Test
+    void buyNiceTiming_3번_중_한번이라도_내려가면_getPrice_3번_호출되지만_buy는_호출되지_않는다() {
+        // arrange
+        AutoTrading autoTrading = new AutoTrading(mockStockBroker);
+        String stockCode = "005930";
+        int amount = 1000000;
+
+        // getPrice를 3번 호출할 때 상승->하락 추세 시뮬레이션 (100 -> 110 -> 105)
+        when(mockStockBroker.getPrice(stockCode))
+                .thenReturn(100)
+                .thenReturn(110)
+                .thenReturn(105);
+
+        // act
+        boolean result = autoTrading.buyNiceTiming(stockCode, amount);
+
+        // assert
+        assertFalse(result);
+        verify(mockStockBroker, times(3)).getPrice(stockCode); // getPrice 3번 호출 검증
+        verify(mockStockBroker, never()).buy(anyString(), anyInt(), anyInt()); // buy 호출되지 않음 검증
+    }
+
+    @Test
+    void sellNiceTiming_3번_다_내려가면_getPrice_3번_호출되고_sell_1번_호출된다() {
+        // arrange
+        AutoTrading autoTrading = new AutoTrading(mockStockBroker);
+        String stockCode = "005930";
+        int quantity = 10;
+
+        // getPrice를 3번 호출할 때 하락 추세 시뮬레이션 (120 -> 110 -> 100)
+        when(mockStockBroker.getPrice(stockCode))
+                .thenReturn(120)
+                .thenReturn(110)
+                .thenReturn(100);
+
+        when(mockStockBroker.sell(stockCode, 100, quantity)).thenReturn(true);
+
+        // act
+        boolean result = autoTrading.sellNiceTiming(stockCode, quantity);
+
+        // assert
+        assertTrue(result);
+        verify(mockStockBroker, times(3)).getPrice(stockCode); // getPrice 3번 호출 검증
+        verify(mockStockBroker, times(1)).sell(stockCode, 100, quantity); // sell 1번 호출 검증
+    }
+
+    @Test
+    void sellNiceTiming_3번_중_한번이라도_올라가면_getPrice_3번_호출되지만_sell은_호출되지_않는다() {
+        // arrange
+        AutoTrading autoTrading = new AutoTrading(mockStockBroker);
+        String stockCode = "005930";
+        int quantity = 10;
+
+        // getPrice를 3번 호출할 때 하락->상승 추세 시뮬레이션 (120 -> 110 -> 115)
+        when(mockStockBroker.getPrice(stockCode))
+                .thenReturn(120)
+                .thenReturn(110)
+                .thenReturn(115);
+
+        // act
+        boolean result = autoTrading.sellNiceTiming(stockCode, quantity);
+
+        // assert
+        assertFalse(result);
+        verify(mockStockBroker, times(3)).getPrice(stockCode); // getPrice 3번 호출 검증
+        verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt()); // sell 호출되지 않음 검증
     }
 }
