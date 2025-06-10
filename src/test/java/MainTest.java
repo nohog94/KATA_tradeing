@@ -55,6 +55,11 @@ public class MainTest {
             selector.selectStockBroker(brokerName);
         });
     }
+
+    @Test
+    void test {
+        System.out.println("hi");
+    }
     
     @Test
     void Nemo_증권사의_로그인_기능을_테스트한다() {
