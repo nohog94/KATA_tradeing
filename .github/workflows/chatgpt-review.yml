@@ -21,6 +21,6 @@ jobs:
           OPENAI_TOKEN:        ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN:        ${{ secrets.GITHUB_TOKEN }}
           FULL_REVIEW_COMMENT: 'chatgpt'       # PR 댓글에 “chatgpt” 라고 쓰면 실행
-          PROGRAMMING_LANGUAGE:'JavaScript'    # 리포지토리 주 언어
+          PROGRAMMING_LANGUAGE: 'JavaScript'    # 리포지토리 주 언어
           REVIEW_ON_LABEL:     false           # 라벨 없이 자동 실행
           REVIEW_MODE:         files           # 전체 파일 분석 (‘patch’ 도 가능)
