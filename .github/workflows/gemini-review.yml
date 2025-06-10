@@ -1,0 +1,62 @@
+# .github/workflows/gemini-review.yml
+name: Gemini Flash-Lite 기반 코드 리뷰
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      # 1) 코드 가져오기
+      - uses: actions/checkout@v3
+
+      # 2) GCP 서비스 계정 인증
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      # 3) gcloud 설치 (이미 설치되어 있을 수도 있습니다)
+      - name: Install gcloud SDK
+        run: |
+          sudo apt-get update && sudo apt-get install -y google-cloud-sdk
+
+      # 4) PR diff 추출
+      - name: Generate PR diff
+        id: diff
+        run: echo "DIFF<<EOF" >> $GITHUB_ENV && git diff origin/${{ github.base_ref }}...HEAD >> $GITHUB_ENV && echo "EOF" >> $GITHUB_ENV
+
+      - name: Call Gemini Flash-Lite
+        id: gemini
+        run: |
+          ACCESS_TOKEN=$(gcloud auth print-access-token)
+          RESPONSE=$(curl -s -X POST \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://us-central1-aiplatform.googleapis.com/v1/projects/YOUR_PROJECT_ID/locations/us-central1/publishers/google/models/gemini-2.0-flash-lite:predict" \
+            -d @- <<EOF
+          {
+            "instances":[{"content":${{ toJson(env.DIFF) }}}],
+            "parameters":{"temperature":0.2}
+          }
+          EOF
+          )
+          echo "RESPONSE<<EOF" >> $GITHUB_ENV
+          echo "$RESPONSE" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Post AI review comment    # ← run 블록 바깥, 같은 레벨로 정렬
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const resp = JSON.parse(process.env.RESPONSE);
+            const review = resp.predictions[0].content;
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### 🤖 AI 코드 리뷰 (Gemini Flash-Lite)\n\`\`\`text\n${review}\n\`\`\``
+            });
