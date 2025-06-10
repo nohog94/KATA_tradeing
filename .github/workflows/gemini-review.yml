@@ -5,6 +5,12 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+# GitHub Actions 권한 설정 추가
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   review:
     runs-on: ubuntu-latest
@@ -28,39 +34,45 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           version: "latest"
 
-      # 3) PR diff 추출
+      # 3) PR diff 추출 및 파일로 저장
       - name: Generate PR diff
         id: diff
         run: |
-          echo "DIFF<<EOF" >> $GITHUB_ENV
           git fetch origin $GITHUB_BASE_REF
-          git diff origin/${GITHUB_BASE_REF}...HEAD -- >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          git diff origin/${GITHUB_BASE_REF}...HEAD -- > diff.txt
+          
+          # diff가 너무 크면 자르기 (Gemini API 토큰 제한)
+          if [ $(wc -c < diff.txt) -gt 50000 ]; then
+            head -c 50000 diff.txt > diff_truncated.txt
+            echo -e "\n\n... (diff가 너무 길어서 잘렸습니다)" >> diff_truncated.txt
+            mv diff_truncated.txt diff.txt
+          fi
 
-      # 4) Gemini API 호출 (디버깅 추가)
+      # 4) Gemini API 호출 (JSON 이스케이프 문제 해결)
       - name: Call Gemini Flash-Lite
         id: gemini
         run: |
           ACCESS_TOKEN=$(gcloud auth print-access-token)
+          
+          # diff 내용을 JSON으로 안전하게 변환
+          DIFF_CONTENT=$(cat diff.txt | jq -Rs .)
           
           # 요청 페이로드 생성
           cat > request.json <<EOF
           {
             "contents": [{
               "parts": [{
-                "text": "다음 코드 변경사항을 리뷰해주세요:\n\n${{ toJson(env.DIFF) }}"
+                "text": "다음 코드 변경사항을 한국어로 리뷰해주세요. 개선점이나 잠재적 문제점을 찾아주세요:\n\n${DIFF_CONTENT}"
               }]
             }],
             "generationConfig": {
               "temperature": 0.2,
-              "maxOutputTokens": 1000
+              "maxOutputTokens": 2000
             }
           }
-          EOF
+EOF
           
-          echo "=== API 요청 페이로드 ==="
-          cat request.json
-          echo "========================"
+          echo "=== API 요청 준비 완료 ==="
           
           # API 호출
           RESPONSE=$(curl -s -X POST \
@@ -73,19 +85,19 @@ jobs:
           echo "$RESPONSE"
           echo "================"
           
-          # 응답을 환경변수에 저장
-          echo "RESPONSE<<EOF" >> $GITHUB_ENV
-          echo "$RESPONSE" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          # 응답을 파일로 저장 (환경변수 길이 제한 회피)
+          echo "$RESPONSE" > response.json
 
-      # 5) AI 리뷰 댓글 작성 (안전한 파싱 추가)
+      # 5) AI 리뷰 댓글 작성
       - name: Post AI review comment
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const fs = require('fs');
+            
             try {
-              const response = process.env.RESPONSE;
+              const response = fs.readFileSync('response.json', 'utf8');
               console.log('Raw response:', response);
               
               const resp = JSON.parse(response);
@@ -96,26 +108,43 @@ jobs:
               // Gemini API 응답 구조 확인
               if (resp.candidates && resp.candidates[0] && resp.candidates[0].content && resp.candidates[0].content.parts && resp.candidates[0].content.parts[0]) {
                 reviewText = resp.candidates[0].content.parts[0].text;
-              } else if (resp.predictions && resp.predictions[0] && resp.predictions[0].content) {
-                reviewText = resp.predictions[0].content;
               } else if (resp.error) {
-                reviewText = `API 오류: ${resp.error.message || JSON.stringify(resp.error)}`;
+                reviewText = `API 오류가 발생했습니다: ${resp.error.message}`;
               } else {
-                reviewText = `예상치 못한 응답 구조입니다. 응답: ${JSON.stringify(resp)}`;
+                reviewText = '예상치 못한 응답 구조입니다.';
               }
               
+              // PR에 댓글 작성
               await github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: `### 🤖 AI 코드 리뷰 (Gemini Flash-Lite)\n\`\`\`text\n${reviewText}\n\`\`\``
+                body: `### 🤖 AI 코드 리뷰 (Gemini Flash-Lite)
+
+${reviewText}
+
+---
+*이 리뷰는 AI가 자동으로 생성한 것입니다. 참고용으로만 사용하세요.*`
               });
+              
+              console.log('Review comment posted successfully');
+              
             } catch (error) {
               console.error('Error processing response:', error);
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: `### 🤖 AI 코드 리뷰 오류\n\`\`\`\n${error.message}\n\`\`\`\n\n원본 응답:\n\`\`\`\n${process.env.RESPONSE}\n\`\`\``
-              });
+              
+              // 에러 발생 시에도 댓글 작성 시도
+              try {
+                await github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: `### ⚠️ AI 코드 리뷰 오류
+                  
+코드 리뷰 중 오류가 발생했습니다: \`${error.message}\`
+
+워크플로우 로그를 확인해주세요.`
+                });
+              } catch (commentError) {
+                console.error('Failed to post error comment:', commentError);
+              }
             }
