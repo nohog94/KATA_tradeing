@@ -18,10 +18,12 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      # 3) gcloud 설치 (이미 설치되어 있을 수도 있습니다)
-      - name: Install gcloud SDK
-        run: |
-          sudo apt-get update && sudo apt-get install -y google-cloud-sdk
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: "norse-appliance-462503-h4"           # 본인 GCP 프로젝트 ID
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          version: "latest"      
 
       # 4) PR diff 추출
       - name: Generate PR diff
