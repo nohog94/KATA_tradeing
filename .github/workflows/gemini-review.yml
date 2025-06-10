@@ -64,7 +64,7 @@ jobs:
             "contents": [{
                 "role": "user",
                 "parts": [{
-                    "text": "다음 코드 변경사항을 한국어로 리뷰해주세요. 개선점이나 잠재적 문제점을 찾아주세요:\n\n" + diff_content
+                    "text": "다음 코드 변경사항에 대해 리팩토링이 필요한 부분이 있으면 한국어로 리뷰해주세요. :\n\n" + diff_content
                 }]
             }],
             "generationConfig": {
