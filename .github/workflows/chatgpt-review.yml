@@ -1,4 +1,3 @@
-# .github/workflows/chatgpt-js-review.yml
 name: ChatGPT JS 기반 코드 리뷰
 
 on:
@@ -8,19 +7,15 @@ on:
 jobs:
   review:
     runs-on: ubuntu-latest
-
     steps:
-      # 1) 체크아웃
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      # 2) ChatGPT 리뷰 액션
       - name: ChatGPT 코드 리뷰
-        uses: adshao/chatgpt-code-review-action@v0.2
+        uses: adshao/chatgpt-code-review-action@main   # ← v0.2.5 로 변경
         with:
           OPENAI_TOKEN:        ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN:        ${{ secrets.GITHUB_TOKEN }}
-          FULL_REVIEW_COMMENT: 'chatgpt'       # PR 댓글에 “chatgpt” 라고 쓰면 실행
-          PROGRAMMING_LANGUAGE: 'JavaScript'    # 리포지토리 주 언어
-          REVIEW_ON_LABEL:     false           # 라벨 없이 자동 실행
-          REVIEW_MODE:         files           # 전체 파일 분석 (‘patch’ 도 가능)
+          FULL_REVIEW_COMMENT: 'chatgpt'
+          REVIEW_COMMENT_PREFIX: 'chatgpt:'
+          PROGRAMMING_LANGUAGE: 'JavaScript'
