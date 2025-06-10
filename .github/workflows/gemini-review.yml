@@ -49,7 +49,7 @@ jobs:
           RESPONSE=$(curl -s -X POST \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
-            "https://us-central1-aiplatform.googleapis.com/v1/projects/YOUR_PROJECT_ID/locations/us-central1/publishers/google/models/gemini-2.0-flash-lite:predict" \
+            "https://us-central1-aiplatform.googleapis.com/v1/projects/norse-appliance-462503-h4/locations/us-central1/publishers/google/models/gemini-2.0-flash-lite:predict" \
             -d @- <<EOF
           {
             "instances":[{"content":${{ toJson(env.DIFF) }}}],
