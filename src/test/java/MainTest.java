@@ -355,4 +355,10 @@ public class MainTest {
         verify(mockStockBroker, times(3)).getPrice(stockCode); // getPrice 3번 호출 검증
         verify(mockStockBroker, never()).sell(anyString(), anyInt(), anyInt()); // sell 호출되지 않음 검증
     }
+
+    @Test
+    void test {
+        System.out.println("hi");
+    }
+    
 }
