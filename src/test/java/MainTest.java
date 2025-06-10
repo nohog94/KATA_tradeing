@@ -134,6 +134,11 @@ public class MainTest {
     }
 
     @Test
+    void test {
+        System.out.println("hi");
+    }
+    
+    @Test
     void Nemo_없는_종목_매도_시_에러_return을_테스트한다() {
         // arrange
         StockBroker broker = selector.selectStockBroker("Nemo");
