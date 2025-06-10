@@ -1,23 +1,9 @@
-name: ChatGPT 기반 코드 리뷰
-
-on:
-  pull_request:
-    types: [opened, synchronize]
-
-jobs:
-  review:
-    runs-on: ubuntu-latest
-    steps:
-      # 1) PR 코드 체크아웃
-      - uses: actions/checkout@v3
-
-      # 2) ChatGPT 코드 리뷰 액션 실행
-      - name: ChatGPT 코드 리뷰
-        uses: cirolini/genai-code-review@v2
-        with:
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
-          github_token:    ${{ secrets.GITHUB_TOKEN }}
-          github_pr_id:    ${{ github.event.number }}
-          openai_model:    "gpt-3.5-turbo"   # 또는 "gpt-4"
-          mode:            files            # 변경된 파일 전체 분석
-          language:        ko               # 코멘트 언어를 한국어로
+- name: GenAI Code Review
+  uses: cirolini/genai-code-review@v1
+  with:
+    openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+    github_token:    ${{ secrets.GITHUB_TOKEN }}
+    github_pr_id:    ${{ github.event.number }}
+    openai_model:    "gpt-3.5-turbo"
+    mode:            files
+    language:        ko
