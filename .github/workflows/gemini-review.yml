@@ -70,7 +70,7 @@ jobs:
               "maxOutputTokens": 2000
             }
           }
-EOF
+          EOF
           
           echo "=== API 요청 준비 완료 ==="
           
@@ -121,10 +121,10 @@ EOF
                 repo: context.repo.repo,
                 body: `### 🤖 AI 코드 리뷰 (Gemini Flash-Lite)
 
-${reviewText}
+                       ${reviewText}
 
----
-*이 리뷰는 AI가 자동으로 생성한 것입니다. 참고용으로만 사용하세요.*`
+
+                       *이 리뷰는 AI가 자동으로 생성한 것입니다. 참고용으로만 사용하세요.*`
               });
               
               console.log('Review comment posted successfully');
@@ -140,9 +140,9 @@ ${reviewText}
                   repo: context.repo.repo,
                   body: `### ⚠️ AI 코드 리뷰 오류
                   
-코드 리뷰 중 오류가 발생했습니다: \`${error.message}\`
+                  코드 리뷰 중 오류가 발생했습니다: \`${error.message}\`
 
-워크플로우 로그를 확인해주세요.`
+                  워크플로우 로그를 확인해주세요.`
                 });
               } catch (commentError) {
                 console.error('Failed to post error comment:', commentError);
