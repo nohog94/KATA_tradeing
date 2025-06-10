@@ -10,7 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # 1) 코드 가져오기
-      - uses: actions/checkout@v3
+      - name: Checkout repo (fetch full history)
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0     # 모든 브랜치·커밋 내려받기
 
       # 2) GCP 서비스 계정 인증
       - name: Authenticate to GCP
@@ -28,7 +31,16 @@ jobs:
       # 4) PR diff 추출
       - name: Generate PR diff
         id: diff
-        run: echo "DIFF<<EOF" >> $GITHUB_ENV && git diff origin/${{ github.base_ref }}...HEAD >> $GITHUB_ENV && echo "EOF" >> $GITHUB_ENV
+        run: |
+          # Open the HERE-doc marker
+          echo "DIFF<<EOF" >> $GITHUB_ENV
+      
+          # origin/${GITHUB_BASE_REF} 를 fetch, 그리고 diff 생성
+          git fetch origin $GITHUB_BASE_REF
+          git diff origin/${GITHUB_BASE_REF}...HEAD -- >> $GITHUB_ENV
+      
+          # Close the HERE-doc marker
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Call Gemini Flash-Lite
         id: gemini
