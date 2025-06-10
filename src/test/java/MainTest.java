@@ -69,6 +69,11 @@ public class MainTest {
         // assert
         assertTrue(result);
     }
+
+    @Test
+    void test {
+        System.out.println("hi");
+    }
     
     @Test
     void Kiwer_증권사의_로그인_기능을_테스트한다() {
