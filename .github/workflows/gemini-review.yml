@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repo (fetch full history)
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0     # 모든 브랜치·커밋 내려받기
+          fetch-depth: 0
 
       # 2) GCP 서비스 계정 인증
       - name: Authenticate to GCP
@@ -24,53 +24,98 @@ jobs:
       - name: Set up gcloud CLI
         uses: google-github-actions/setup-gcloud@v1
         with:
-          project_id: "norse-appliance-462503-h4"           # 본인 GCP 프로젝트 ID
+          project_id: "norse-appliance-462503-h4"
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-          version: "latest"      
+          version: "latest"
 
-      # 4) PR diff 추출
+      # 3) PR diff 추출
       - name: Generate PR diff
         id: diff
         run: |
-          # Open the HERE-doc marker
           echo "DIFF<<EOF" >> $GITHUB_ENV
-      
-          # origin/${GITHUB_BASE_REF} 를 fetch, 그리고 diff 생성
           git fetch origin $GITHUB_BASE_REF
           git diff origin/${GITHUB_BASE_REF}...HEAD -- >> $GITHUB_ENV
-      
-          # Close the HERE-doc marker
           echo "EOF" >> $GITHUB_ENV
 
+      # 4) Gemini API 호출 (디버깅 추가)
       - name: Call Gemini Flash-Lite
         id: gemini
         run: |
           ACCESS_TOKEN=$(gcloud auth print-access-token)
+          
+          # 요청 페이로드 생성
+          cat > request.json <<EOF
+          {
+            "contents": [{
+              "parts": [{
+                "text": "다음 코드 변경사항을 리뷰해주세요:\n\n${{ toJson(env.DIFF) }}"
+              }]
+            }],
+            "generationConfig": {
+              "temperature": 0.2,
+              "maxOutputTokens": 1000
+            }
+          }
+          EOF
+          
+          echo "=== API 요청 페이로드 ==="
+          cat request.json
+          echo "========================"
+          
+          # API 호출
           RESPONSE=$(curl -s -X POST \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
-            "https://us-central1-aiplatform.googleapis.com/v1/projects/norse-appliance-462503-h4/locations/us-central1/publishers/google/models/gemini-2.0-flash-lite:predict" \
-            -d @- <<EOF
-          {
-            "instances":[{"content":${{ toJson(env.DIFF) }}}],
-            "parameters":{"temperature":0.2}
-          }
-          EOF
-          )
+            "https://us-central1-aiplatform.googleapis.com/v1/projects/norse-appliance-462503-h4/locations/us-central1/publishers/google/models/gemini-2.0-flash-lite:generateContent" \
+            -d @request.json)
+          
+          echo "=== API 응답 ==="
+          echo "$RESPONSE"
+          echo "================"
+          
+          # 응답을 환경변수에 저장
           echo "RESPONSE<<EOF" >> $GITHUB_ENV
           echo "$RESPONSE" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Post AI review comment    # ← run 블록 바깥, 같은 레벨로 정렬
+      # 5) AI 리뷰 댓글 작성 (안전한 파싱 추가)
+      - name: Post AI review comment
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const resp = JSON.parse(process.env.RESPONSE);
-            const review = resp.predictions[0].content;
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `### 🤖 AI 코드 리뷰 (Gemini Flash-Lite)\n\`\`\`text\n${review}\n\`\`\``
-            });
+            try {
+              const response = process.env.RESPONSE;
+              console.log('Raw response:', response);
+              
+              const resp = JSON.parse(response);
+              console.log('Parsed response:', JSON.stringify(resp, null, 2));
+              
+              let reviewText = '';
+              
+              // Gemini API 응답 구조 확인
+              if (resp.candidates && resp.candidates[0] && resp.candidates[0].content && resp.candidates[0].content.parts && resp.candidates[0].content.parts[0]) {
+                reviewText = resp.candidates[0].content.parts[0].text;
+              } else if (resp.predictions && resp.predictions[0] && resp.predictions[0].content) {
+                reviewText = resp.predictions[0].content;
+              } else if (resp.error) {
+                reviewText = `API 오류: ${resp.error.message || JSON.stringify(resp.error)}`;
+              } else {
+                reviewText = `예상치 못한 응답 구조입니다. 응답: ${JSON.stringify(resp)}`;
+              }
+              
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `### 🤖 AI 코드 리뷰 (Gemini Flash-Lite)\n\`\`\`text\n${reviewText}\n\`\`\``
+              });
+            } catch (error) {
+              console.error('Error processing response:', error);
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `### 🤖 AI 코드 리뷰 오류\n\`\`\`\n${error.message}\n\`\`\`\n\n원본 응답:\n\`\`\`\n${process.env.RESPONSE}\n\`\`\``
+              });
+            }
