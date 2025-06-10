@@ -18,6 +18,11 @@ public class MainTest {
         MockitoAnnotations.openMocks(this);
         selector = new StockBrokerSelector();
     }
+
+    @Test
+    void test {
+        System.out.println("hi");
+    }
     
     @Test
     void Nemo_증권사를_선택할_수_있다() {
